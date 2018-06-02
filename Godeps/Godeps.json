@@ -1,0 +1,70 @@
+{
+	"ImportPath": "rest-api",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/go-redis/redis",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/consistenthash",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/hashtag",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/pool",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/proto",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/singleflight",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/util",
+			"Comment": "v6.10.2-11-g18b2e30",
+			"Rev": "18b2e30835f248bffe475cb69c7267204de1bc1e"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.3.0-62-g92a288d",
+			"Rev": "92a288d2426bb79e058d61dc5009a67e0568c431"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Comment": "v1.6.2-2-ge0b5aba",
+			"Rev": "e0b5abaaae35242fa74372f26c24107711702a4e"
+		},
+		{
+			"ImportPath": "github.com/joho/godotenv",
+			"Comment": "v1.2.0-12-g1709ab1",
+			"Rev": "1709ab122c988931ad53508747b3c061400c2984"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/pbkdf2",
+			"Rev": "1a580b3eff7814fc9b40602fd35256c63b50f491"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/scrypt",
+			"Rev": "1a580b3eff7814fc9b40602fd35256c63b50f491"
+		}
+	]
+}
