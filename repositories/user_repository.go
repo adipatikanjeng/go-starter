@@ -18,7 +18,7 @@ func GetUserByID(db *sql.DB, id int) (*models.User, error) {
 		from
 			users
 		where
-			id = $1
+			id = ?
 	`
 	var user models.User
 	err := db.QueryRow(query, id).Scan(&user.ID, &user.Email, &user.Name)
@@ -34,7 +34,7 @@ func GetUserByEmail(db *sql.DB, email string) (*models.User, error) {
 		from
 			users
 		where
-			email = $1
+			email = ?
 	`
 	var user models.User
 	err := db.QueryRow(query, email).Scan(&user.ID, &user.Email, &user.Name)

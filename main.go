@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"rest-api/utils/middleware"
 
 	"rest-api/controllers"
+	"rest-api/middlewares"
 	"rest-api/routes"
 	"rest-api/utils/caching"
 	"rest-api/utils/database"
@@ -35,7 +35,7 @@ func main() {
 	jobController := controllers.NewJobController(db, cache)
 
 	mux := mux.NewRouter()
-	amw := middleware.AuthMiddleware(cache)
+	amw := middlewares.AuthMiddleware(cache)
 	mux.Use(amw.Middleware) //middleware for api
 	routes.CreateRoutes(mux, authController, userController, jobController)
 
