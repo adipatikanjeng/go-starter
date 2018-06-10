@@ -41,6 +41,26 @@ func GetUserByEmail(db *sql.DB, email string) (*models.User, error) {
 	return &user, err
 }
 
+func GetExistingUserByEmail(db *sql.DB, email string) (bool, error) {
+	var exist bool = false
+	const query = `
+		select
+			count(*)
+			as count
+		from
+			users
+		where
+			email = ?
+	`
+	var count int
+	err := db.QueryRow(query, email).Scan(&count)
+	if count != 0 {
+		exist = true
+	}
+
+	return exist, err
+}
+
 func GetPrivateUserDetailsByEmail(db *sql.DB, email string) (*models.PrivateUserDetails, error) {
 	const query = `
 		select
@@ -57,7 +77,7 @@ func GetPrivateUserDetailsByEmail(db *sql.DB, email string) (*models.PrivateUser
 	return &u, err
 }
 
-func CreateUser(db *sql.DB, email, name, password string) (int64, error) {
+func CreateUser(db *sql.DB, email, name, password string) error {
 	const query = `
 		insert into users (
 			email,
@@ -82,9 +102,10 @@ func CreateUser(db *sql.DB, email, name, password string) (int64, error) {
 		log.Fatal("Cannot run insert statement", err)
 	}
 	id, _ := res.LastInsertId()
+
 	fmt.Printf("Inserted row: %d", id)
 
-	return id, err
+	return err
 }
 
 func GetUsers(db *sql.DB, page, resultsPerPage int) ([]*models.User, error) {

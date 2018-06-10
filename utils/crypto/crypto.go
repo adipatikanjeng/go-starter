@@ -2,11 +2,13 @@ package crypto
 
 import (
 	"crypto/rand"
-	"encoding/base64"
 	"encoding/hex"
 	"io"
 	"log"
+	"os"
+	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -33,12 +35,21 @@ func HashPassword(password, salt string) string {
 	return string(hashedPassword)
 }
 
-func GenerateToken() (string, error) {
-	b := make([]byte, 64)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-	str := base64.URLEncoding.EncodeToString(b)
-	return str, nil
+func GenerateToken(userId int) (string, error) {
+	key := []byte(os.Getenv("JWT_SECRET_KEY"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": userId,
+		"nbf":     time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(key)
+
+	// b := make([]byte, 64)
+	// _, err := rand.Read(b)
+	// if err != nil {
+	// 	return "", err
+	// }
+	// str := base64.URLEncoding.EncodeToString(b)
+	return tokenString, err
 }

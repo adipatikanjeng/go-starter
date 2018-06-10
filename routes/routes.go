@@ -14,11 +14,14 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-func CreateRoutes(mux *mux.Router, ac *controllers.AuthController, uc *controllers.UserController, jc *controllers.JobController) {
+func CreateAuthRoutes(mux *mux.Router, ac *controllers.AuthController) {
 	mux.HandleFunc("/", homePage)
 	auth := mux.PathPrefix("/auth").Subrouter()
 	auth.HandleFunc("/register", ac.Register).Methods("POST")
 	auth.HandleFunc("/login", ac.Login).Methods("POST")
+}
+
+func CreateAPIRoutes(mux *mux.Router, uc *controllers.UserController, jc *controllers.JobController) {
 	api := mux.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/users", uc.Lists).Methods("GET")
 

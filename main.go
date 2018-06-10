@@ -6,13 +6,15 @@ import (
 	"os"
 
 	"rest-api/controllers"
-	"rest-api/middlewares"
 	"rest-api/routes"
 	"rest-api/utils/caching"
 	"rest-api/utils/database"
 
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/urfave/negroni"
 )
 
 func main() {
@@ -34,12 +36,25 @@ func main() {
 	userController := controllers.NewUserController(db, cache)
 	jobController := controllers.NewJobController(db, cache)
 
+	apiMux := mux.NewRouter()
 	mux := mux.NewRouter()
-	amw := middlewares.AuthMiddleware(cache)
-	mux.Use(amw.Middleware) //middleware for api
-	routes.CreateRoutes(mux, authController, userController, jobController)
 
-	if err := http.ListenAndServe(":8081", mux); err != nil {
+	mw := jwtmiddleware.New(jwtmiddleware.Options{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
+		},
+		SigningMethod: jwt.SigningMethodHS256,
+	})
+
+	routes.CreateAuthRoutes(mux, authController)
+	routes.CreateAPIRoutes(apiMux, userController, jobController)
+
+	an := negroni.New(negroni.HandlerFunc(mw.HandlerWithNext), negroni.Wrap(apiMux))
+	mux.PathPrefix("/api/v1").Handler(an)
+	n := negroni.Classic()
+	n.UseHandler(mux)
+
+	if err := http.ListenAndServe(":8081", n); err != nil {
 		log.Fatal(err)
 	}
 }

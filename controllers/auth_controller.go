@@ -37,37 +37,25 @@ func (uc *AuthController) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := repositories.GetPrivateUserDetailsByEmail(uc.DB, rr.Email)
+	isExist, err := repositories.GetExistingUserByEmail(uc.DB, rr.Email)
 	if err != nil {
-		log.Fatalf("Login Error: %s", err)
+		log.Fatalf("Internal Error: %s", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
-	if user != nil {
+	if isExist {
 		http.Error(w, "Email existing", http.StatusBadRequest)
+		return
 	}
 
-	id, err := repositories.CreateUser(uc.DB, rr.Email, rr.Name, rr.Password)
+	err = repositories.CreateUser(uc.DB, rr.Email, rr.Name, rr.Password)
 	if err != nil {
 		log.Fatalf("Add user to database error: %s", err)
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
-	token, err := crypto.GenerateToken()
-	if err != nil {
-		log.Fatalf("Generate token Error: %s", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
-	}
-	oneMonth := time.Duration(60*60*24*30) * time.Second
-	err = uc.Cache.Set(fmt.Sprintf("token_%s", token), strconv.FormatInt(id, 10), oneMonth)
-	if err != nil {
-		log.Fatalf("Add token to redis Error: %s", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
-	}
 	p := map[string]string{
-		"token": token,
+		"message": "Registration success, please login",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(p)
@@ -96,7 +84,7 @@ func (uc *AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid password", http.StatusBadRequest)
 		return
 	}
-	token, err := crypto.GenerateToken()
+	token, err := crypto.GenerateToken(user.ID)
 	if err != nil {
 		log.Fatalf("Login Error: %s", err)
 		http.Error(w, "", http.StatusInternalServerError)
