@@ -12,6 +12,7 @@ import (
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/urfave/negroni"
@@ -22,6 +23,10 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	db, err := database.Connect(os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DATABASE"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"))
 
@@ -35,6 +40,7 @@ func main() {
 	authController := controllers.NewAuthController(db, cache)
 	userController := controllers.NewUserController(db, cache)
 	jobController := controllers.NewJobController(db, cache)
+	mediaController := controllers.NewMediaController(db, cache)
 
 	apiMux := mux.NewRouter()
 	mux := mux.NewRouter()
@@ -47,14 +53,14 @@ func main() {
 	})
 
 	routes.CreateAuthRoutes(mux, authController)
-	routes.CreateAPIRoutes(apiMux, userController, jobController)
+	routes.CreateAPIRoutes(apiMux, userController, jobController, mediaController)
 
 	an := negroni.New(negroni.HandlerFunc(mw.HandlerWithNext), negroni.Wrap(apiMux))
-	mux.PathPrefix("/api/v1").Handler(an)
+	mux.PathPrefix("/api/v1").Handler(handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(an))
 	n := negroni.Classic()
 	n.UseHandler(mux)
 
-	if err := http.ListenAndServe(":8081", n); err != nil {
+	if err := http.ListenAndServe(":8081", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(n)); err != nil {
 		log.Fatal(err)
 	}
 }

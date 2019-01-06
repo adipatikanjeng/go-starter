@@ -1,0 +1,38 @@
+package: bitbucket.org/adipatikanjeng/rest-api
+import:
+- package: github.com/go-redis/redis
+  version: 18b2e30835f248bffe475cb69c7267204de1bc1e
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
+  - internal/singleflight
+  - internal/util
+- package: github.com/go-sql-driver/mysql
+  version: 92a288d2426bb79e058d61dc5009a67e0568c431
+- package: github.com/gorilla/mux
+  version: e0b5abaaae35242fa74372f26c24107711702a4e
+- package: github.com/joho/godotenv
+  version: 1709ab122c988931ad53508747b3c061400c2984
+- package: golang.org/x/crypto
+  version: 1a580b3eff7814fc9b40602fd35256c63b50f491
+  subpackages:
+  - pbkdf2
+  - scrypt
+- package: github.com/auth0/go-jwt-middleware
+- package: github.com/dgrijalva/jwt-go
+- package: github.com/gorilla/handlers
+- package: github.com/urfave/negroni
+- package: rest-api/controllers
+- package: rest-api/models
+- package: rest-api/repositories
+- package: rest-api/requests
+- package: rest-api/routes
+- package: rest-api/utils/caching
+- package: rest-api/utils/crypto
+- package: rest-api/utils/database
+- package: rest-api/utils/upload
+ignore:
+- forecasting_service

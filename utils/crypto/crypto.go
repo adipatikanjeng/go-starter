@@ -44,12 +44,5 @@ func GenerateToken(userId int) (string, error) {
 
 	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString(key)
-
-	// b := make([]byte, 64)
-	// _, err := rand.Read(b)
-	// if err != nil {
-	// 	return "", err
-	// }
-	// str := base64.URLEncoding.EncodeToString(b)
 	return tokenString, err
 }

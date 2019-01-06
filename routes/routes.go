@@ -21,9 +21,12 @@ func CreateAuthRoutes(mux *mux.Router, ac *controllers.AuthController) {
 	auth.HandleFunc("/login", ac.Login).Methods("POST")
 }
 
-func CreateAPIRoutes(mux *mux.Router, uc *controllers.UserController, jc *controllers.JobController) {
+func CreateAPIRoutes(mux *mux.Router, uc *controllers.UserController, jc *controllers.JobController, mc *controllers.MediaController) {
 	api := mux.PathPrefix("/api/v1").Subrouter()
+	api.HandleFunc("/me", uc.Profile).Methods("GET")
 	api.HandleFunc("/users", uc.Lists).Methods("GET")
+	api.HandleFunc("/user/{id}", uc.Update).Methods("PUT")
+	api.HandleFunc("/upload", mc.Upload).Methods("POST")
 
 	mux.HandleFunc("/job", jc.Create)
 	mux.HandleFunc("/job/", jc.Job)

@@ -108,6 +108,29 @@ func CreateUser(db *sql.DB, email, name, password string) error {
 	return err
 }
 
+func UpdateUser(db *sql.DB, jobID int, email, name string, password string) error {
+	const query = `
+		update users set
+			email = ?,
+			name = ?
+			where id = ?
+		`
+	_, err := db.Exec(query, email, name, jobID)
+	if len(password) > 0 {
+		salt := crypto.GenerateSalt()
+		hashedPassword := crypto.HashPassword(password, salt)
+		const query = `
+		update users set
+			password = ?
+			salt = ?
+			where id = ?
+		`
+		_, err := db.Exec(query, hashedPassword, salt, jobID)
+		return err
+	}
+	return err
+}
+
 func GetUsers(db *sql.DB, page, resultsPerPage int) ([]*models.User, error) {
 	const query = `
 		select

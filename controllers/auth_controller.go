@@ -28,10 +28,11 @@ func NewAuthController(db *sql.DB, c caching.Cache) *AuthController {
 }
 
 func (uc *AuthController) Register(w http.ResponseWriter, r *http.Request) {
+
 	decoder := json.NewDecoder(r.Body)
 	var rr requests.RegisterRequest
 	err := decoder.Decode(&rr)
-
+	fmt.Println(rr)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
